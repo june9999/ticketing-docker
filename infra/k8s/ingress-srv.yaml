@@ -1,0 +1,24 @@
+# tell ingress engineer controller how to deal with incoming request  
+# An Ingress needs apiVersion, kind, metadata and spec fields.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  # needs to be dns subdomain name
+  name: ingress-service
+  annotations:
+    # make sure your Ingress targets exactly one Ingress controller by specifying the ingress.class annotation
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+  # pretended domain name
+    - host: ticketing.dev
+      http:
+        paths:
+          - path: /api/users/
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-srv
+                port:
+                  number: 3000
